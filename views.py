@@ -46,8 +46,10 @@ def add_url(request, template_name="us/url_form.html"):
 
             url, created = Url.objects.get_or_create(
                 short_url=new_short_url,
-                url=form.cleaned_data.get("url")
             )
+
+            url.url = form.cleaned_data.get("url")
+            url.save()
 
             return HttpResponse(url.short_url)
 

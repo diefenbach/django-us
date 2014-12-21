@@ -26,7 +26,7 @@ def test_redirect(gr):
 @pytest.mark.django_db
 def test_add_url_get(gr, user_with_perm):
     gr.user = user_with_perm
-    response = us.views.add_url(gr)
+    response = us.views.add_url_form(gr)
     assert response.status_code == 200
     assert "id_short_url" in response.content
     assert "id_url" in response.content
@@ -39,7 +39,7 @@ def test_add_url_post_missing_url(pr, user_with_perm):
     assert Url.objects.count() == 0
 
     pr.user = user_with_perm
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert "This field is required." in response.content
     assert Url.objects.count() == 0
@@ -55,7 +55,7 @@ def test_add_url_post_valid(pr, user_with_perm):
         "url": "http://www.iqpp.de",
     }
     pr.user = user_with_perm
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert Url.objects.count() == 1
 
@@ -72,7 +72,7 @@ def test_add_url_post_missing_short_url(pr, user_with_perm):
         "url": "http://www.iqpp.de",
     }
     pr.user = user_with_perm
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert Url.objects.count() == 1
 
@@ -90,11 +90,11 @@ def test_add_url_post_already_exists(pr, user_with_perm):
         "short_url": "iq",
     }
     pr.user = user_with_perm
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert Url.objects.count() == 1
 
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert "Url with this Short URL already exists: http://www.iqpp.de" in response.content
     assert Url.objects.count() == 1
@@ -105,7 +105,7 @@ def test_add_url_post_already_exists(pr, user_with_perm):
         "override": True,
     }
 
-    response = us.views.add_url(pr)
+    response = us.views.add_url_form(pr)
     assert response.status_code == 200
     assert Url.objects.count() == 1
 
@@ -115,3 +115,22 @@ def test_add_url_post_already_exists(pr, user_with_perm):
 def test_url_model():
     url = Url.objects.create(url="http://www.iqpp.de", short_url="iq")
     assert url.__unicode__() == "iq -> http://www.iqpp.de"
+
+
+@pytest.mark.unit_test
+@pytest.mark.django_db
+def test_add_url(gr):
+    assert Url.objects.count() == 0
+
+    gr.GET = {"url": "http://www.iqpp.de"}
+    response_1 = us.views.add_url(gr)
+    assert Url.objects.count() == 1
+
+    response_2 = us.views.add_url(gr)
+    assert Url.objects.count() == 1
+    assert response_1.content == response_2.content
+
+    gr.GET = {"url": "http://www.test.de"}
+    response_3 = us.views.add_url(gr)
+    assert Url.objects.count() == 2
+    assert response_1.content != response_3.content

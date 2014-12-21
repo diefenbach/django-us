@@ -24,8 +24,30 @@ def redirect_to_url(request, short_url):
         return HttpResponseRedirect(url.url)
 
 
+def add_url(request):
+    """
+    Adds url
+    """
+    url = request.GET.get("url", "")
+    if url == "":
+        raise Http404()
+
+    new_url, created = Url.objects.get_or_create(url=url)
+    if not created:
+        return HttpResponse(new_url.short_url)
+    else:
+        while 1:
+            new_short_url = ''.join(random.choice(string.ascii_letters) for _ in range(4))
+            try:
+                url = Url.objects.get(short_url=new_short_url)
+            except Url.DoesNotExist:
+                new_url.short_url = new_short_url
+                new_url.save()
+                return HttpResponse(new_short_url)
+
+
 @permission_required("us.add_url", login_url="us_login")
-def add_url(request, template_name="us/url_form.html"):
+def add_url_form(request, template_name="us/url_form.html"):
     """
     Provides form and logic to add a new url.
     """

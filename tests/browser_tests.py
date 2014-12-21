@@ -5,7 +5,7 @@ import pytest
 
 @pytest.mark.browser_test
 def test_add_url(browser, user_with_perm, live_server):
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
     _login(browser)
     short_url = browser.find_element_by_name("short_url")
@@ -19,7 +19,7 @@ def test_add_url(browser, user_with_perm, live_server):
 
 @pytest.mark.browser_test
 def test_add_url_missing_all_fields(browser, user_with_perm, live_server):
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
     _login(browser)
     submit = browser.find_element_by_css_selector("input[type=submit]")
@@ -29,7 +29,7 @@ def test_add_url_missing_all_fields(browser, user_with_perm, live_server):
 
 @pytest.mark.browser_test
 def test_add_url_missing_url_field(browser, user_with_perm, live_server):
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
 
     # login
@@ -49,7 +49,7 @@ def test_add_url_missing_url_field(browser, user_with_perm, live_server):
 
 @pytest.mark.browser_test
 def test_add_url_missing_short_url_field(browser, user_with_perm, live_server):
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
 
     # login
@@ -69,7 +69,7 @@ def test_add_url_missing_short_url_field(browser, user_with_perm, live_server):
 
 @pytest.mark.browser_test
 def test_add_url_already_existing(browser, user_with_perm, live_server):
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
 
     # login
@@ -88,7 +88,7 @@ def test_add_url_already_existing(browser, user_with_perm, live_server):
     submit.click()
     assert "test" in browser.page_source
 
-    url = reverse("us_add_url")
+    url = reverse("us_add_url_form")
     browser.get(live_server.url + url)
     short_url = browser.find_element_by_name("short_url")
     short_url.send_keys("test")

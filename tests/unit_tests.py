@@ -134,3 +134,11 @@ def test_add_url(gr):
     response_3 = us.views.add_url(gr)
     assert Url.objects.count() == 2
     assert response_1.content != response_3.content
+
+
+@pytest.mark.unit_test
+def test_add_url_empty(gr):
+    with pytest.raises(Http404) as e:
+        gr.GET = {}
+        us.views.add_url(gr)
+    assert e.typename == "Http404"

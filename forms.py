@@ -14,16 +14,21 @@ class UrlForm(forms.ModelForm):
     class Meta:
         model = Url
 
+    def __init__(self, *args, **kwargs):
+        super(UrlForm, self).__init__(*args, **kwargs)
+        self.fields["short_url"].required = False
+
     def clean(self):
         override = self.cleaned_data.get("override")
-        short_url = self.cleaned_data.get("short_url")
+        short_url = self.cleaned_data.get("short_url", "")
 
-        try:
-            url = Url.objects.get(short_url=short_url)
-        except Url.DoesNotExist:
-            pass
-        else:
-            if not override:
-                self.add_error("short_url", _("Url with this Short URL already exists: {url}".format(url=url.url)))
+        if short_url != "":
+            try:
+                url = Url.objects.get(short_url=short_url)
+            except Url.DoesNotExist:
+                pass
+            else:
+                if not override:
+                    self.add_error("short_url", _("Url with this Short URL already exists: {url}".format(url=url.url)))
 
         return self.cleaned_data

@@ -9,9 +9,9 @@ from us.models import Url
 @pytest.mark.unit_test
 @pytest.mark.django_db
 def test_redirect_404(gr):
-    with pytest.raises(Http404):
-        response = us.views.redirect_to_url(gr, "404")
-        assert response.status_code == 404
+    with pytest.raises(Http404) as e:
+        us.views.redirect_to_url(gr, "404")
+    assert e.typename == "Http404"
 
 
 @pytest.mark.unit_test
@@ -108,3 +108,10 @@ def test_add_url_post_already_exists(pr, user_with_perm):
     response = us.views.add_url(pr)
     assert response.status_code == 200
     assert Url.objects.count() == 1
+
+
+@pytest.mark.unit_test
+@pytest.mark.django_db
+def test_url_model():
+    url = Url.objects.create(url="http://www.iqpp.de", short_url="iq")
+    assert url.__unicode__() == "iq -> http://www.iqpp.de"

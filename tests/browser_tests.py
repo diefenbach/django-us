@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 import pytest
 
 
-# Browser tests
 @pytest.mark.browser_test
 def test_add_url(browser, user_with_perm, live_server):
     url = reverse("us_add_url")

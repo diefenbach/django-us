@@ -7,8 +7,8 @@ from selenium import webdriver
 
 BROWSERS = {
     'firefox': webdriver.Firefox,
-    # 'chrome': webdriver.Chrome,
-    # 'phantomjs': webdriver.PhantomJS,
+    'chrome': webdriver.Chrome,
+    'phantomjs': webdriver.PhantomJS,
 }
 
 
@@ -33,8 +33,14 @@ def user_with_perm(user):
     return user
 
 
+@pytest.fixture(scope="function")
+def gr(rf):
+    return rf.get("/")
+
+
 # Fixture tests
 @pytest.mark.django_db
+@pytest.mark.fixture_test
 def test_user_fixture(user):
     assert user.username == "doe"
     assert user.has_perm("us.add_url") is False
@@ -47,6 +53,12 @@ def test_user_fixture(user):
 
 
 @pytest.mark.django_db
+@pytest.mark.fixture_test
 def test_user_with_perm_fixture(user_with_perm):
     assert user_with_perm.username == "doe"
     assert user_with_perm.has_perm("us.add_url") is True
+
+
+@pytest.mark.fixture_test
+def test_get_request(gr):
+    assert gr.method == "GET"

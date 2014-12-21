@@ -7,8 +7,8 @@ from selenium import webdriver
 
 BROWSERS = {
     'firefox': webdriver.Firefox,
-    'chrome': webdriver.Chrome,
-    'phantomjs': webdriver.PhantomJS,
+    # 'chrome': webdriver.Chrome,
+    # 'phantomjs': webdriver.PhantomJS,
 }
 
 
@@ -36,6 +36,11 @@ def user_with_perm(user):
 @pytest.fixture(scope="function")
 def gr(rf):
     return rf.get("/")
+
+
+@pytest.fixture(scope="function")
+def pr(rf):
+    return rf.post("/")
 
 
 # Fixture tests

@@ -1,0 +1,6 @@
+include CHANGES.rst
+include README.rst
+include LICENSE.txt
+recursive-include django-us/migrations *
+recursive-include django-us/templates *
+recursive-include django-us/tests *

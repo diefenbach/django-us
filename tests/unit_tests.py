@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.http import Http404
 
 import pytest
@@ -137,8 +138,24 @@ def test_add_url(gr):
 
 
 @pytest.mark.unit_test
-def test_add_url_empty(gr):
-    with pytest.raises(Http404) as e:
+def test_add_url_missing(gr):
+    with pytest.raises(ValidationError) as e:
         gr.GET = {}
         us.views.add_url(gr)
-    assert e.typename == "Http404"
+    assert e.value.messages == ["Enter a valid URL."]
+
+
+@pytest.mark.unit_test
+def test_add_url_empty(gr):
+    with pytest.raises(ValidationError) as e:
+        gr.GET = {"url": ""}
+        us.views.add_url(gr)
+    assert e.value.messages == ["Enter a valid URL."]
+
+
+@pytest.mark.unit_test
+def test_add_url_invalid(gr):
+    with pytest.raises(ValidationError) as e:
+        gr.GET = {"url": "iqpp"}
+        us.views.add_url(gr)
+    assert e.value.messages == ["Enter a valid URL."]

@@ -2,6 +2,7 @@ import random
 import string
 
 from django.contrib.auth.decorators import permission_required
+from django.core.validators import URLValidator
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -28,9 +29,10 @@ def add_url(request):
     """
     Adds url
     """
-    url = request.GET.get("url", "")
-    if url == "":
-        raise Http404()
+    url = request.GET.get("url")
+
+    # Raise ValidationError if url is not valid.
+    URLValidator()(url)
 
     new_url, created = Url.objects.get_or_create(url=url)
     if not created:

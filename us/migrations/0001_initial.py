@@ -14,8 +14,8 @@ class Migration(migrations.Migration):
             name='Url',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('url', models.TextField(null=True, verbose_name='Url')),
-                ('short_url', models.CharField(max_length=50, null=True, verbose_name='Short URL')),
+                ('url', models.TextField(verbose_name='Url')),
+                ('short_url', models.CharField(unique=True, max_length=50, verbose_name='Short URL')),
             ],
             options={
             },

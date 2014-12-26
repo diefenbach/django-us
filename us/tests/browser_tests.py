@@ -1,6 +1,21 @@
 import re
 from django.core.urlresolvers import reverse
 import pytest
+from selenium.common.exceptions import NoSuchElementException
+
+
+@pytest.mark.browser_test
+def test_add_url_form(browser, user_with_perm, live_server):
+    url = reverse("us_add_url_form")
+    browser.get(live_server.url + url)
+    _login(browser)
+    assert browser.find_element_by_name("short_url")
+    assert browser.find_element_by_name("url")
+    assert browser.find_element_by_css_selector("input[type=submit]")
+    with pytest.raises(NoSuchElementException):
+        browser.find_element_by_name("created")
+    with pytest.raises(NoSuchElementException):
+        browser.find_element_by_name("modified")
 
 
 @pytest.mark.browser_test

@@ -1,6 +1,5 @@
 from django.conf.urls import patterns, url
 
-
 urlpatterns = patterns('django.contrib.auth.views',
     url('^login', "login", {"template_name": "us/login.html"}, name='us_login'),
     url('^logout', "logout", {"template_name": "us/logged_out.html"}, name='us_logout'),

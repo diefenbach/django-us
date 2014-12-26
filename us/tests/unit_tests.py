@@ -116,6 +116,8 @@ def test_add_url_post_already_exists(pr, user_with_perm):
 def test_url_model():
     url = Url.objects.create(url="http://www.iqpp.de", short_url="iq")
     assert url.__unicode__() == "iq -> http://www.iqpp.de"
+    assert bool(url.created) is True
+    assert bool(url.modified) is True
 
 
 @pytest.mark.unit_test

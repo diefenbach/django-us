@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -14,11 +15,12 @@ def redirect_to_url(request, short_url):
     try:
         url = Url.objects.get(short_url=short_url)
     except Url.DoesNotExist:
-        raise Http404()
+        raise Http404("Redirect to URL")
     else:
         return HttpResponseRedirect(url.url)
 
 
+# @permission_required("us.add_url")
 def add_url(request, template_name="us/url_form.html"):
     """
     Provides form and logic to add a new url.
